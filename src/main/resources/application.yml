@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: ${EDUCATION_DB_USERNAME:zakat}
+    password: ${EDUCATION_DB_PASSWORD:87654321}
+    url: jdbc:postgresql://${EDUCATION_DB_HOST:localhost}:${EDUCATION_DB_PORT:5432}/${EDUCATION_DB_NAME:education_system}
+
+  jpa:
+    database: postgresql
+    hibernate:
+      ddl-auto: update
+    show-sql: true
