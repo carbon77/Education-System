@@ -1,5 +1,6 @@
 package com.carbon.education.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import org.hibernate.Hibernate
 import org.springframework.security.core.GrantedAuthority
@@ -17,9 +18,11 @@ data class User(
     @Column(nullable = true)
     var lastName: String? = null,
 
+    @JsonIgnore
     @Column(nullable = false)
     private var password: String? = null,
 
+    @JsonIgnore
     @Enumerated(EnumType.STRING)
     var role: Role? = null,
 
