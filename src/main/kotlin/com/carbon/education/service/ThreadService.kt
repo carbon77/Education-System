@@ -30,7 +30,7 @@ class ThreadService(
         return threadRepository.save(thread)
     }
 
-    fun getOne(threadId: Long): ThreadController.GetThreadResponse {
+    fun getOneWithPosts(threadId: Long): ThreadController.GetThreadResponse {
         val posts = postRepository.findAllByThread_Id(threadId)
         val thread = threadRepository.findById(threadId).orElseThrow {
             ResponseStatusException(HttpStatus.BAD_REQUEST, "There's no thread with id=$threadId")
@@ -38,6 +38,11 @@ class ThreadService(
 
         return ThreadController.GetThreadResponse(thread, posts)
     }
+
+    fun getOne(threadId: Long): Thread =
+        threadRepository.findById(threadId).orElseThrow {
+            ResponseStatusException(HttpStatus.BAD_REQUEST, "There's no thread with id=$threadId")
+        }
 
     fun delete(threadId: Long) = threadRepository.deleteById(threadId)
 }

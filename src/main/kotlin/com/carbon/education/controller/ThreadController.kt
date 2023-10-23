@@ -3,7 +3,6 @@ package com.carbon.education.controller
 import com.carbon.education.model.Post
 import com.carbon.education.model.Thread
 import com.carbon.education.service.ThreadService
-import jakarta.annotation.security.PermitAll
 import jakarta.validation.constraints.NotBlank
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -33,7 +32,7 @@ class ThreadController(
 
     @GetMapping("/{threadId}")
     fun getOne(@PathVariable threadId: Long): ResponseEntity<GetThreadResponse> =
-        ResponseEntity.ok(threadService.getOne(threadId))
+        ResponseEntity.ok(threadService.getOneWithPosts(threadId))
 
     @DeleteMapping("/{threadId}")
     fun delete(@PathVariable threadId: Long) =
