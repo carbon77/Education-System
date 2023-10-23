@@ -6,8 +6,6 @@ import com.carbon.education.model.User
 import com.carbon.education.repository.PostRepository
 import com.carbon.education.repository.ThreadRepository
 import org.springframework.http.HttpStatus
-import org.springframework.http.HttpStatusCode
-import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
@@ -19,9 +17,8 @@ class ThreadService(
     var userDetailsService: UserDetailsService,
     var postRepository: PostRepository
 ) {
-    fun findAllByUsername(username: String): List<Thread> {
-        return threadRepository.findAllByUserEmail(username)
-    }
+    fun getAll(): List<Thread> = threadRepository.findAll()
+    fun findAllByUsername(username: String): List<Thread> = threadRepository.findAllByUserEmail(username)
 
     fun create(auth: Authentication, request: ThreadController.CreateThreadRequest): Thread {
         val user: User = userDetailsService.loadUserByUsername(auth.name) as User
@@ -34,7 +31,7 @@ class ThreadService(
     }
 
     fun getOne(threadId: Long): ThreadController.GetThreadResponse {
-        val posts = postRepository.findAllByThreadId(threadId)
+        val posts = postRepository.findAllByThread_Id(threadId)
         val thread = threadRepository.findById(threadId).orElseThrow {
             ResponseStatusException(HttpStatus.BAD_REQUEST, "There's no thread with id=$threadId")
         }
@@ -42,7 +39,5 @@ class ThreadService(
         return ThreadController.GetThreadResponse(thread, posts)
     }
 
-    fun delete(threadId: Long) {
-        threadRepository.deleteById(threadId)
-    }
+    fun delete(threadId: Long) = threadRepository.deleteById(threadId)
 }

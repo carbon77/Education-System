@@ -3,7 +3,7 @@ package com.carbon.education.controller
 import com.carbon.education.model.Post
 import com.carbon.education.model.Thread
 import com.carbon.education.service.ThreadService
-import jakarta.validation.Valid
+import jakarta.annotation.security.PermitAll
 import jakarta.validation.constraints.NotBlank
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -16,6 +16,10 @@ import org.springframework.web.server.ResponseStatusException
 class ThreadController(
     var threadService: ThreadService
 ) {
+    @GetMapping("/all")
+    fun getAll(): ResponseEntity<List<Thread>> =
+        ResponseEntity.ok(threadService.getAll())
+
     @GetMapping
     fun getAllByUsername(auth: Authentication): ResponseEntity<List<Thread>> {
         if (auth.name == null)

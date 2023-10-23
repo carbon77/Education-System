@@ -34,7 +34,12 @@ data class Thread(
     var user: User? = null
 ) {
     @get:JsonInclude
-    val userId: Long? get() = this.user?.id
+    val author: Map<String, Any?>
+        get() = mapOf(
+            "id" to this.user?.id,
+            "firstName" to this.user?.firstName,
+            "lastName" to this.user?.lastName
+        )
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
