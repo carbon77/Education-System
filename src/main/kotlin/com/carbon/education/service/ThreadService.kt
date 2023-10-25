@@ -1,6 +1,7 @@
 package com.carbon.education.service
 
-import com.carbon.education.controller.ThreadController
+import com.carbon.education.dto.CreateThreadRequest
+import com.carbon.education.dto.GetThreadResponse
 import com.carbon.education.model.Thread
 import com.carbon.education.model.User
 import com.carbon.education.repository.PostRepository
@@ -20,7 +21,7 @@ class ThreadService(
     fun getAll(): List<Thread> = threadRepository.findAll()
     fun findAllByUsername(username: String): List<Thread> = threadRepository.findAllByUserEmail(username)
 
-    fun create(auth: Authentication, request: ThreadController.CreateThreadRequest): Thread {
+    fun create(auth: Authentication, request: CreateThreadRequest): Thread {
         val user: User = userDetailsService.loadUserByUsername(auth.name) as User
         val thread = Thread(
             title = request.title,
@@ -30,13 +31,13 @@ class ThreadService(
         return threadRepository.save(thread)
     }
 
-    fun getOneWithPosts(threadId: Long): ThreadController.GetThreadResponse {
+    fun getOneWithPosts(threadId: Long): GetThreadResponse {
         val posts = postRepository.findAllByThread_Id(threadId)
         val thread = threadRepository.findById(threadId).orElseThrow {
             ResponseStatusException(HttpStatus.BAD_REQUEST, "There's no thread with id=$threadId")
         }
 
-        return ThreadController.GetThreadResponse(thread, posts)
+        return GetThreadResponse(thread, posts)
     }
 
     fun getOne(threadId: Long): Thread =

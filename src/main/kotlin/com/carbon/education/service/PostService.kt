@@ -1,6 +1,6 @@
 package com.carbon.education.service
 
-import com.carbon.education.controller.PostController
+import com.carbon.education.dto.CreatePostRequest
 import com.carbon.education.model.Post
 import com.carbon.education.model.Thread
 import com.carbon.education.model.User
@@ -17,7 +17,7 @@ class PostService(
     private val userDetailsService: UserDetailsService,
     private val threadService: ThreadService
 ) {
-    fun create(auth: Authentication, request: PostController.CreatePostRequest): Post {
+    fun create(auth: Authentication, request: CreatePostRequest): Post {
         val user: User = userDetailsService.loadUserByUsername(auth.name) as User
         val thread: Thread = threadService.getOne(request.threadId)
         val post = Post(

@@ -1,9 +1,9 @@
 package com.carbon.education.controller
 
-import com.carbon.education.model.Post
+import com.carbon.education.dto.CreateThreadRequest
+import com.carbon.education.dto.GetThreadResponse
 import com.carbon.education.model.Thread
 import com.carbon.education.service.ThreadService
-import jakarta.validation.constraints.NotBlank
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
@@ -37,15 +37,4 @@ class ThreadController(
     @DeleteMapping("/{threadId}")
     fun delete(@PathVariable threadId: Long) =
         ResponseEntity.ok(threadService.delete(threadId))
-
-    data class CreateThreadRequest(
-        @field:NotBlank(message = "Title is mandatory")
-        val title: String,
-        val description: String?
-    )
-
-    data class GetThreadResponse (
-        val thread: Thread,
-        val posts: List<Post>
-    )
 }
