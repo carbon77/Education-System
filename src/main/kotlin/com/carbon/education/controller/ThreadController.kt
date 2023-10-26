@@ -11,15 +11,15 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 
 @RestController
-@RequestMapping("/api/thread")
+@RequestMapping("/api/threads")
 class ThreadController(
     var threadService: ThreadService
 ) {
-    @GetMapping("/all")
+    @GetMapping
     fun getAll(): ResponseEntity<List<Thread>> =
         ResponseEntity.ok(threadService.getAll())
 
-    @GetMapping
+    @GetMapping("/my")
     fun getAllByUsername(auth: Authentication): ResponseEntity<List<Thread>> {
         if (auth.name == null)
             throw ResponseStatusException(HttpStatus.FORBIDDEN, "Unauthorized")
