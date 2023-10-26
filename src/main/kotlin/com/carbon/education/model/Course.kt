@@ -1,5 +1,6 @@
 package com.carbon.education.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import org.hibernate.Hibernate
 import java.sql.Timestamp
@@ -11,6 +12,12 @@ data class Course(
 
     @Column(columnDefinition = "TEXT")
     var text: String? = null,
+
+    @Column(nullable = false)
+    var price: Double? = null,
+
+    @Enumerated(value = EnumType.STRING)
+    var courseType: CourseType? = null,
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
@@ -25,6 +32,7 @@ data class Course(
     )
     var createdAt: Timestamp? = null,
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
         name = "course_registrations",
