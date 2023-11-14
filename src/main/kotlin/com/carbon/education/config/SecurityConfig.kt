@@ -1,6 +1,5 @@
 package com.carbon.education.config
 
-import com.carbon.education.repository.UserRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -12,18 +11,19 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.web.servlet.config.annotation.CorsRegistry
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+
 
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
-    private val authenticationProvider: AuthenticationProvider,
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
-    private val userRepository: UserRepository
+    private val userDetailsService: UserDetailsService
 ) {
 
     @Bean
@@ -34,7 +34,9 @@ class SecurityConfig(
             it
                 .requestMatchers("/api/auth/**")
                 .permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/thread/**")
+                .requestMatchers(HttpMethod.GET, "/api/threads/**")
+                .permitAll()
+                .requestMatchers(HttpMethod.OPTIONS, "/api/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
@@ -42,20 +44,14 @@ class SecurityConfig(
         .sessionManagement {
             it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         }
-        .authenticationProvider(authenticationProvider)
+        .authenticationProvider(authenticationProvider())
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
         .build()
 
     @Bean
-    fun userDetailsService(): UserDetailsService = UserDetailsService { username ->
-        userRepository.findByEmail(username)
-            .orElseThrow { UsernameNotFoundException("User not found") }
-    }
-
-    @Bean
     fun authenticationProvider(): AuthenticationProvider {
         val authProvider = DaoAuthenticationProvider()
-        authProvider.setUserDetailsService(userDetailsService())
+        authProvider.setUserDetailsService(userDetailsService)
         authProvider.setPasswordEncoder(passwordEncoder())
         return authProvider
     }
@@ -66,4 +62,15 @@ class SecurityConfig(
     @Bean
     fun authenticationManager(config: AuthenticationConfiguration): AuthenticationManager =
         config.authenticationManager
+
+    @Bean
+    fun corsConfigurer(): WebMvcConfigurer? {
+        return object : WebMvcConfigurer {
+            override fun addCorsMappings(registry: CorsRegistry) {
+                registry
+                    .addMapping("/**")
+                    .allowedOrigins("*")
+            }
+        }
+    }
 }

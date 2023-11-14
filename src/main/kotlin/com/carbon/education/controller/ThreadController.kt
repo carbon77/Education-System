@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException
 
 @RestController
 @RequestMapping("/api/threads")
+@CrossOrigin("http://localhost:3000")
 class ThreadController(
     var threadService: ThreadService
 ) {
