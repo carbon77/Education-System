@@ -8,7 +8,7 @@ data class Lesson(
     @Column(nullable = false)
     var title: String? = null,
 
-    @Column(nullable = false)
+    @Column(name="order_in_course", nullable = false)
     var order: Int? = null,
 
     @Column(nullable = false, columnDefinition = "TEXT")

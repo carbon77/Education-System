@@ -31,7 +31,11 @@ data class Thread(
     @JsonIgnore
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
-    var user: User? = null
+    var user: User? = null,
+
+    @JsonIgnore
+    @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true)
+    var posts: List<Post> = ArrayList()
 ) {
     @get:JsonInclude
     val author: Map<String, Any?>

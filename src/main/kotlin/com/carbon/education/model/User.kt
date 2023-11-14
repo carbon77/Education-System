@@ -22,7 +22,6 @@ data class User(
     @Column(nullable = false)
     private var password: String? = null,
 
-    @JsonIgnore
     @Enumerated(EnumType.STRING)
     var role: Role? = null,
 
