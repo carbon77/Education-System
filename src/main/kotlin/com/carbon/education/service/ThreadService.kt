@@ -2,6 +2,7 @@ package com.carbon.education.service
 
 import com.carbon.education.dto.CreateThreadRequest
 import com.carbon.education.dto.GetThreadResponse
+import com.carbon.education.dto.ThreadInfo
 import com.carbon.education.model.Thread
 import com.carbon.education.model.User
 import com.carbon.education.repository.PostRepository
@@ -44,6 +45,12 @@ class ThreadService(
         threadRepository.findById(threadId).orElseThrow {
             ResponseStatusException(HttpStatus.BAD_REQUEST, "There's no thread with id=$threadId")
         }
+
+    fun getAllThreadsInfo(
+        query: String?
+    ): List<ThreadInfo> {
+        return threadRepository.findAllInfo(query ?: "")
+    }
 
     fun delete(threadId: Long) = threadRepository.deleteById(threadId)
 }

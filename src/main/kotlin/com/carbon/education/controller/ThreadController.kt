@@ -2,6 +2,7 @@ package com.carbon.education.controller
 
 import com.carbon.education.dto.CreateThreadRequest
 import com.carbon.education.dto.GetThreadResponse
+import com.carbon.education.dto.ThreadInfo
 import com.carbon.education.model.Thread
 import com.carbon.education.service.ThreadService
 import org.springframework.http.HttpStatus
@@ -25,6 +26,13 @@ class ThreadController(
         if (auth.name == null)
             throw ResponseStatusException(HttpStatus.FORBIDDEN, "Unauthorized")
         return ResponseEntity.ok(threadService.findAllByUsername(auth.name))
+    }
+
+    @GetMapping("/info")
+    fun getThreadsInfo(
+        @RequestParam(required = false) query: String?
+    ): List<ThreadInfo> {
+        return threadService.getAllThreadsInfo(query)
     }
 
     @PostMapping
