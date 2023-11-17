@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 
 interface CourseRepository : JpaRepository<Course, Long>, JpaSpecificationExecutor<Course> {
-    fun findAllByUser_Id(userId: Long): List<Course>
+    fun findAllByUserEmail(email: String): List<Course>
 
     companion object {
         fun typeEqual(courseType: CourseType?): Specification<Course> =

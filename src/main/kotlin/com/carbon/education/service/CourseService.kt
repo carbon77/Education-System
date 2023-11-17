@@ -8,9 +8,11 @@ import com.carbon.education.repository.CourseRepository
 import com.carbon.education.repository.CourseRepository.Companion.priceGreaterOrEqual
 import com.carbon.education.repository.CourseRepository.Companion.priceLessOrEqual
 import com.carbon.education.repository.CourseRepository.Companion.typeEqual
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication
+import com.carbon.education.repository.ThreadRepository
 import org.springframework.data.jpa.domain.Specification.where
 import org.springframework.http.HttpStatus
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
@@ -18,7 +20,7 @@ import org.springframework.web.server.ResponseStatusException
 @Service
 class CourseService(
     private val courseRepository: CourseRepository,
-    private val userDetailsService: UserDetailsService
+    private val userDetailsService: UserDetailsService, private val threadRepository: ThreadRepository
 ) {
 
     fun create(request: CreateCourseRequest, auth: Authentication): Course {
@@ -44,9 +46,11 @@ class CourseService(
         )
     )
 
-    fun getAllByAuthorId(authorId: Long): List<Course> = courseRepository.findAllByUser_Id(authorId)
+    fun getAllMy(auth: Authentication): List<Course> {
+        return courseRepository.findAllByUserEmail(auth.name)
+    }
 
-    fun delete(courseId: Long, auth: Authentication) {
+    fun getOneMy(auth: Authentication, courseId: Long): Course {
         val user = userDetailsService.loadUserByUsername(auth.name) as User
         val course = courseRepository.findById(courseId).orElseThrow {
             ResponseStatusException(HttpStatus.BAD_REQUEST, "There's no course with id=$courseId")
@@ -56,6 +60,11 @@ class CourseService(
             throw ResponseStatusException(HttpStatus.FORBIDDEN, "This operation is forbidden!")
         }
 
+        return course
+    }
+
+    fun delete(courseId: Long, auth: Authentication) {
+        val course = getOneMy(auth, courseId)
         courseRepository.delete(course)
     }
 }
