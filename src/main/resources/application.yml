@@ -1,3 +1,7 @@
+server:
+  servlet:
+    context-path: /
+
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -11,6 +15,13 @@ spring:
       ddl-auto: update
     show-sql: true
 
+  application:
+    name: Education
+
+springdoc:
+  swagger-ui:
+    path: /docs
+  show-actuator: true
 
 app:
   security:
@@ -18,3 +29,4 @@ app:
       secret-key: 09B63EE1A5DD4AB080610DDA313625F51E64D38BF4710421F95C447EA0CA46C4
       expiration: 86400000  # a day
       refresh-token-expiration: 604800000 # 7 days
+

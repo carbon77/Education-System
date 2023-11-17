@@ -32,7 +32,13 @@ class SecurityConfig(
         .cors { it.disable() }
         .authorizeHttpRequests {
             it
-                .requestMatchers("/api/auth/**")
+                .requestMatchers(
+                    "/api/auth/**",
+                    "/docs/**",
+                    "/swagger-ui/**",
+                    "/v3/api-docs/**",
+                    "/actuator"
+                )
                 .permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/threads/**")
                 .permitAll()
