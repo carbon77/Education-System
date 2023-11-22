@@ -7,6 +7,5 @@ import org.springframework.context.annotation.Configuration
 @ConfigurationProperties(prefix = "app.security.jwt")
 data class JwtConfig(
     var secretKey: String = "",
-    var expiration: Long = 0,
-    var refreshTokenExpiration: Long = 0
+    var expiration: Long = 0
 )

@@ -29,10 +29,6 @@ class JwtService(
         return buildToken(extraClaims, userDetails, jwtConfig.expiration)
     }
 
-    fun generateRefreshToken(userDetails: UserDetails): String {
-        return buildToken(HashMap(), userDetails, jwtConfig.refreshTokenExpiration)
-    }
-
     private fun buildToken(extraClaims: Map<String, Any>, userDetails: UserDetails, expiration: Long): String {
         return Jwts
             .builder()
