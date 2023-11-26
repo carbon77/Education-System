@@ -1,5 +1,6 @@
 package com.carbon.education.controller
 
+import com.carbon.education.dto.BanUserRequest
 import com.carbon.education.dto.CreateThreadRequest
 import com.carbon.education.dto.GetThreadResponse
 import com.carbon.education.dto.ThreadInfo
@@ -46,4 +47,12 @@ class ThreadController(
     @DeleteMapping("/{threadId}")
     fun delete(@PathVariable threadId: Long) =
         ResponseEntity.ok(threadService.delete(threadId))
+
+    @PostMapping("/{threadId}/ban")
+    fun banUser(@PathVariable threadId: Long, @RequestBody request: BanUserRequest) =
+        ResponseEntity.ok(threadService.banUser(threadId, request.userId))
+
+    @PostMapping("/{threadId}/unban")
+    fun unbanUser(@PathVariable threadId: Long, @RequestBody request: BanUserRequest) =
+        ResponseEntity.ok(threadService.unbanUser(threadId, request.userId))
 }

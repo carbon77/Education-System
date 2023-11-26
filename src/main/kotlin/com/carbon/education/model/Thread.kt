@@ -35,7 +35,15 @@ data class Thread(
 
     @JsonIgnore
     @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true)
-    var posts: List<Post> = ArrayList()
+    var posts: List<Post> = ArrayList(),
+
+    @ManyToMany
+    @JoinTable(
+        name = "banned_users",
+        joinColumns = [JoinColumn(name = "thread_id")],
+        inverseJoinColumns = [JoinColumn(name = "user_id")]
+    )
+    var bannedUsers: MutableSet<User> = mutableSetOf()
 ) {
     @get:JsonInclude
     val author: Map<String, Any?>

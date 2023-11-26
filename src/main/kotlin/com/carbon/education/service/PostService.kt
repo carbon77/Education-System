@@ -6,6 +6,7 @@ import com.carbon.education.model.Thread
 import com.carbon.education.model.User
 import com.carbon.education.repository.PostRepository
 import org.springframework.http.HttpStatus
+import org.springframework.orm.jpa.JpaSystemException
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
@@ -25,7 +26,12 @@ class PostService(
             thread = thread,
             text = request.text
         )
-        postRepository.save(post)
+
+        try {
+            postRepository.save(post)
+        } catch (e: JpaSystemException) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "This user is banned in this thread")
+        }
         return post
     }
 
@@ -35,7 +41,7 @@ class PostService(
         if (!post.isPresent) return
 
         if (!auth.name.equals(post.get().user!!.email)) {
-            throw ResponseStatusException(HttpStatus.FORBIDDEN, "This operation is forbidden for you!")
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "This operation is forbidden for you!")
         }
 
         postRepository.deleteById(postId)
