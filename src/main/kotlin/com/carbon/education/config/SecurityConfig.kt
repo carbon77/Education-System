@@ -40,10 +40,22 @@ class SecurityConfig(
                     "/actuator"
                 )
                 .permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/threads/**")
-                .permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/api/**")
                 .permitAll()
+
+                .requestMatchers(HttpMethod.GET, "/api/courses/**")
+                .permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/lessons/**")
+                .hasAnyRole("USER", "TEACHER", "ADMIN")
+                .requestMatchers("/api/courses/**", "/api/lessons/**")
+                .hasAnyRole("TEACHER", "ADMIN")
+
+                .requestMatchers("/api/threads/**", "/api/posts/**", "/api/user/**")
+                .hasAnyRole("USER", "TEACHER", "ADMIN")
+
+                .requestMatchers("/error")
+                .permitAll()
+
                 .anyRequest()
                 .authenticated()
         }
