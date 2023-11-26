@@ -4,10 +4,13 @@ import com.carbon.education.config.JwtService
 import com.carbon.education.model.Role
 import com.carbon.education.model.User
 import com.carbon.education.repository.UserRepository
+import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.web.server.ResponseStatusException
 
 @Service
 class AuthenticationService(
@@ -24,7 +27,13 @@ class AuthenticationService(
             password = passwordEncoder.encode(request.password),
             role = Role.USER
         )
-        userRepository.save(user)
+
+        try {
+            userRepository.save(user)
+        } catch (e: DataIntegrityViolationException) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "User with this email already exists")
+        }
+
         val jwtToken = jwtService.generateToken(user)
         return AuthenticationResponse(jwtToken)
     }
