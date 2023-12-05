@@ -1,6 +1,7 @@
 package com.carbon.education.service
 
 import com.carbon.education.dto.UpdateUserInfoRequest
+import com.carbon.education.model.Role
 import com.carbon.education.model.User
 import com.carbon.education.repository.UserRepository
 import org.springframework.http.HttpStatus
@@ -16,13 +17,17 @@ class UserService(
     private val userRepository: UserRepository
 ) : UserDetailsService {
 
-    override fun loadUserByUsername(username: String): UserDetails = userRepository.findByEmail(username)
+    override fun loadUserByUsername(username: String): User = userRepository.findByEmail(username)
         .orElseThrow { UsernameNotFoundException("User not found") }
 
     fun updateUserInfo(auth: Authentication, request: UpdateUserInfoRequest) {
-        val user = loadUserByUsername(auth.name) as User
-        user.firstName = request.firstName
-        user.lastName = request.lastName
+        val user = loadUserByUsername(auth.name)
+        user.firstName = request.firstName ?: user.firstName
+        user.lastName = request.lastName ?: user.lastName
+
+        if (request.role != null && request.role != Role.ADMIN) {
+            user.role = request.role
+        }
 
         userRepository.save(user)
     }
