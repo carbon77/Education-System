@@ -2,6 +2,7 @@ package com.carbon.education.controller
 
 import com.carbon.education.dto.CreateCourseRequest
 import com.carbon.education.dto.GetCoursesRequest
+import com.carbon.education.dto.UpdateCourseRequest
 import com.carbon.education.model.Course
 import com.carbon.education.model.CourseType
 import com.carbon.education.service.CourseService
@@ -35,5 +36,14 @@ class CourseController(
     @DeleteMapping("/{courseId}")
     fun delete(auth: Authentication, @PathVariable courseId: Long) {
         courseService.delete(courseId, auth)
+    }
+
+    @PutMapping("/{courseId}")
+    fun update(
+        auth: Authentication,
+        @PathVariable courseId: Long,
+        @RequestBody request: UpdateCourseRequest
+    ): ResponseEntity<Course> {
+        return ResponseEntity.ok(courseService.updateCourse(auth, courseId, request))
     }
 }
