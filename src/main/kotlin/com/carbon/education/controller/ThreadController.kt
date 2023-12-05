@@ -1,11 +1,9 @@
 package com.carbon.education.controller
 
-import com.carbon.education.dto.BanUserRequest
-import com.carbon.education.dto.CreateThreadRequest
-import com.carbon.education.dto.GetThreadResponse
-import com.carbon.education.dto.ThreadInfo
+import com.carbon.education.dto.*
 import com.carbon.education.model.Thread
 import com.carbon.education.service.ThreadService
+import org.apache.coyote.Response
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
@@ -47,6 +45,15 @@ class ThreadController(
     @DeleteMapping("/{threadId}")
     fun delete(@PathVariable threadId: Long) =
         ResponseEntity.ok(threadService.delete(threadId))
+
+    @PutMapping("/{threadId}")
+    fun update(
+        auth: Authentication,
+        @PathVariable threadId: Long,
+        @RequestBody request: UpdateThreadRequest
+    ): ResponseEntity<Thread> {
+        return ResponseEntity.ok(threadService.updateThread(auth, threadId, request))
+    }
 
     @PostMapping("/{threadId}/ban")
     fun banUser(@PathVariable threadId: Long, @RequestBody request: BanUserRequest) =

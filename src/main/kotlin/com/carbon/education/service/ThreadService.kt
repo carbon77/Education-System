@@ -3,6 +3,7 @@ package com.carbon.education.service
 import com.carbon.education.dto.CreateThreadRequest
 import com.carbon.education.dto.GetThreadResponse
 import com.carbon.education.dto.ThreadInfo
+import com.carbon.education.dto.UpdateThreadRequest
 import com.carbon.education.model.Thread
 import com.carbon.education.model.User
 import com.carbon.education.repository.PostRepository
@@ -22,7 +23,7 @@ class ThreadService(
     fun findAllByUsername(username: String): List<Thread> = threadRepository.findAllByUserEmail(username)
 
     fun create(auth: Authentication, request: CreateThreadRequest): Thread {
-        val user: User = userService.loadUserByUsername(auth.name) as User
+        val user: User = userService.loadUserByUsername(auth.name)
         val thread = Thread(
             title = request.title,
             description = request.description ?: "",
@@ -67,5 +68,22 @@ class ThreadService(
         thread.bannedUsers.remove(user)
 
         threadRepository.save(thread)
+    }
+
+    fun updateThread(auth: Authentication, threadId: Long, request: UpdateThreadRequest): Thread? {
+        val user = userService.loadUserByUsername(auth.name)
+        val thread = threadRepository.findById(threadId).orElseThrow {
+            ResponseStatusException(HttpStatus.BAD_REQUEST, "No thread with such id")
+        }
+
+        if (user.id != thread.user?.id) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "It's forbidden operation")
+        }
+
+        thread.title = request.title ?: thread.title
+        thread.description = request.description ?: thread.description
+
+        threadRepository.save(thread)
+        return thread
     }
 }
