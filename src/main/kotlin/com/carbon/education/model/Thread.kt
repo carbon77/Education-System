@@ -37,6 +37,7 @@ data class Thread(
     @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true)
     var posts: List<Post> = ArrayList(),
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
         name = "banned_users",
@@ -52,6 +53,10 @@ data class Thread(
             "firstName" to this.user?.firstName,
             "lastName" to this.user?.lastName
         )
+
+    @get:JsonInclude
+    val bannedUsersIds: List<Long?>
+        get() = bannedUsers.map { u -> u.id }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
